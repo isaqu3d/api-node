@@ -1,6 +1,9 @@
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import { eq } from "drizzle-orm";
 import fastify from "fastify";
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   type ZodTypeProvider,
@@ -23,6 +26,21 @@ const server = fastify({
 
 server.setSerializerCompiler(serializerCompiler);
 server.setValidatorCompiler(validatorCompiler);
+
+server.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: "API Node.js",
+      version: "1.0.0",
+    },
+  },
+
+  transform: jsonSchemaTransform,
+});
+
+server.register(fastifySwaggerUi, {
+  routePrefix: "/docs",
+});
 
 server.get("/courses", async (request, reply) => {
   const result = await db.select().from(courses);
