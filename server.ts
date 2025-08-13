@@ -30,25 +30,30 @@ server.get("/courses", async (request, reply) => {
   return reply.send({ courses: result });
 });
 
-server.get("/courses/:id", async (request, reply) => {
-  type Params = {
-    id: string;
-  };
+server.get(
+  "/courses/:id",
+  {
+    schema: {
+      params: z.object({
+        id: z.uuid(),
+      }),
+    },
+  },
+  async (request, reply) => {
+    const courseId = request.params.id;
 
-  const params = request.params as Params;
-  const courseId = params.id;
+    const result = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.id, courseId));
 
-  const result = await db
-    .select()
-    .from(courses)
-    .where(eq(courses.id, courseId));
+    if (result.length > 0) {
+      return { course: result[0] };
+    }
 
-  if (result.length > 0) {
-    return { course: result[0] };
+    return reply.status(404).send();
   }
-
-  return reply.status(404).send();
-});
+);
 
 server.post(
   "/courses",
