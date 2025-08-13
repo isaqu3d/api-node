@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { db } from "../database/client";
-import { courses } from "../database/schema";
+import { db } from "../database/client.ts";
+import { courses } from "../database/schema.ts";
 
 export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
   server.get("/courses", async (request, reply) => {
