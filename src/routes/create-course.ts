@@ -3,7 +3,7 @@ import z from "zod";
 import { db } from "../database/client";
 import { courses } from "../database/schema";
 
-export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
+export const CreateCourseRoute: FastifyPluginAsyncZod = async (server) => {
   server.post(
     "/courses",
     {
