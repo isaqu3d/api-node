@@ -1,5 +1,11 @@
 import { eq } from "drizzle-orm";
 import fastify from "fastify";
+import {
+  serializerCompiler,
+  validatorCompiler,
+  type ZodTypeProvider,
+} from "fastify-type-provider-zod";
+import z from "zod";
 import { db } from "./src/database/client.ts";
 import { courses } from "./src/database/schema.ts";
 
@@ -13,7 +19,10 @@ const server = fastify({
       },
     },
   },
-});
+}).withTypeProvider<ZodTypeProvider>();
+
+server.setSerializerCompiler(serializerCompiler);
+server.setValidatorCompiler(validatorCompiler);
 
 server.get("/courses", async (request, reply) => {
   const result = await db.select().from(courses);
@@ -41,29 +50,28 @@ server.get("/courses/:id", async (request, reply) => {
   return reply.status(404).send();
 });
 
-server.post("/courses", async (request, reply) => {
-  type Body = {
-    title: string;
-  };
+server.post(
+  "/courses",
+  {
+    schema: {
+      body: z.object({
+        title: z.string().min(5, "Título precisa ter 5 caracteres"),
+      }),
+    },
+  },
+  async (request, reply) => {
+    const courseTitle = request.body.title;
 
-  const courseId = crypto.randomUUID();
+    const result = await db
+      .insert(courses)
+      .values({
+        title: courseTitle,
+      })
+      .returning();
 
-  const body = request.body as Body;
-  const courseTitle = body.title;
-
-  if (!courseTitle) {
-    return reply.status(400).send({ message: "Título obrigatório." });
+    return reply.status(201).send({ courseId: result[0].id });
   }
-
-  const result = await db
-    .insert(courses)
-    .values({
-      title: courseTitle,
-    })
-    .returning();
-
-  return reply.status(201).send({ courseId: result[0].id });
-});
+);
 
 server.listen({ port: 3333 }).then(() => {
   console.log("HTTP server running!");
