@@ -14,32 +14,51 @@ const server = fastify({
 });
 
 const courses = [
-  {
-    id: "1",
-    title: "React",
-  },
-  {
-    id: "2",
-    title: "Node",
-  },
-  {
-    id: "3",
-    title: "Nest",
-  },
+  { id: "1", title: "Curso de Node.js" },
+  { id: "2", title: "Curso de React" },
+  { id: "3", title: "Curso de React Native" },
 ];
 
-server.get("/courses", () => {
-  return { courses };
+server.get("/courses", (request, reply) => {
+  return reply.send({ courses });
 });
 
-server.post("/courses", (request, replay) => {
+server.get("/courses/:id", (request, reply) => {
+  type Params = {
+    id: string;
+  };
+
+  const params = request.params as Params;
+  const courseId = params.id;
+
+  const course = courses.find((course) => course.id === courseId);
+
+  if (course) {
+    return { course };
+  }
+
+  return reply.status(404).send();
+});
+
+server.post("/courses", (request, reply) => {
+  type Body = {
+    title: string;
+  };
+
   const courseId = crypto.randomUUID();
 
-  courses.push({ id: courseId, title: "novo curso" });
+  const body = request.body as Body;
+  const courseTitle = body.title;
 
-  return replay.status(201).send({ courseId });
+  if (!courseTitle) {
+    return reply.status(400).send({ message: "Título obrigatório." });
+  }
+
+  courses.push({ id: courseId, title: courseTitle });
+
+  return reply.status(201).send({ courseId });
 });
 
 server.listen({ port: 3333 }).then(() => {
-  console.log("HTTP server running");
+  console.log("HTTP server running!");
 });
