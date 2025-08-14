@@ -26,16 +26,21 @@ const server = fastify({
 server.setSerializerCompiler(serializerCompiler);
 server.setValidatorCompiler(validatorCompiler);
 
-server.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: "API Node.js",
-      version: "1.0.0",
+if (process.env.NODE_ENV === "development") {
+  server.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: "Desafio Node.js",
+        version: "1.0.0",
+      },
     },
-  },
+    transform: jsonSchemaTransform,
+  });
 
-  transform: jsonSchemaTransform,
-});
+  server.register(scalarAPIReference, {
+    routePrefix: "/docs",
+  });
+}
 
 server.register(scalarAPIReference, {
   routePrefix: "/docs",
