@@ -1,5 +1,5 @@
-import fastifySwagger from "@fastify/swagger";
-import fastifySwaggerUi from "@fastify/swagger-ui";
+import { fastifySwagger } from "@fastify/swagger";
+import scalarAPIReference from "@scalar/fastify-api-reference";
 import fastify from "fastify";
 import {
   jsonSchemaTransform,
@@ -23,27 +23,28 @@ const server = fastify({
   },
 }).withTypeProvider<ZodTypeProvider>();
 
-server.setSerializerCompiler(serializerCompiler);
-server.setValidatorCompiler(validatorCompiler);
-
-server.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: "API Node.js",
-      version: "1.0.0",
+if (process.env.NODE_ENV === "development") {
+  server.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: "API Node.js",
+        version: "1.0.0",
+      },
     },
-  },
+    transform: jsonSchemaTransform,
+  });
 
-  transform: jsonSchemaTransform,
-});
+  server.register(scalarAPIReference, {
+    routePrefix: "/docs",
+  });
+}
 
-server.register(fastifySwaggerUi, {
-  routePrefix: "/docs",
-});
+server.setValidatorCompiler(validatorCompiler);
+server.setSerializerCompiler(serializerCompiler);
 
 server.register(CreateCourseRoute);
-server.register(GetCoursesRoute);
 server.register(GetCourseByIdRoute);
+server.register(GetCoursesRoute);
 
 server.listen({ port: 3333 }).then(() => {
   console.log("HTTP server running!");
