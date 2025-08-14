@@ -9,9 +9,21 @@ export const GetCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
     "/courses/:id",
     {
       schema: {
+        tags: ["courses"],
+        summary: "Get course By ID",
         params: z.object({
           id: z.uuid(),
         }),
+        response: {
+          200: z.object({
+            course: z.object({
+              id: z.uuid(),
+              title: z.string(),
+              description: z.string().nullable(),
+            }),
+          }),
+          404: z.null().describe("Course not found"),
+        },
       },
     },
     async (request, reply) => {
