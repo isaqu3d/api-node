@@ -42,10 +42,6 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-server.register(scalarAPIReference, {
-  routePrefix: "/docs",
-});
-
 server.register(CreateCourseRoute);
 server.register(GetCoursesRoute);
 server.register(GetCourseByIdRoute);
