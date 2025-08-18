@@ -1,4 +1,4 @@
-import { ilike } from "drizzle-orm";
+import { asc, ilike } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import z from "zod";
 import { db } from "../database/client.ts";
@@ -13,6 +13,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
         summary: "Get all courses",
         querystring: z.object({
           search: z.string().optional(),
+          orderBy: z.enum(["title"]).optional().default("title"),
         }),
         response: {
           200: z.object({
@@ -27,7 +28,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
       },
     },
     async (request, reply) => {
-      const { search } = request.query;
+      const { search, orderBy } = request.query;
 
       const result = await db
         .select({
@@ -35,6 +36,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
           title: courses.title,
         })
         .from(courses)
+        .orderBy(asc(courses[orderBy]))
         .where(search ? ilike(courses.title, `%${search}%`) : undefined);
 
       return reply.send({ courses: result });
