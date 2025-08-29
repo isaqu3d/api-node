@@ -1,47 +1,49 @@
-# Node.js
+# Node.js API
 
-Simple API in Node.js + TypeScript using Fastify, Drizzle ORM (PostgreSQL), and Zod. Includes Swagger/Scalar documentation in the development environment.
+A simple REST API built with **[Node.js](https://nodejs.org/)** and **[TypeScript](https://www.typescriptlang.org/)**, powered by **[Fastify](https://fastify.dev/)**, **[Drizzle ORM](https://orm.drizzle.team/)** (PostgreSQL), and **[Zod](https://zod.dev/)**.  
+Includes **[Swagger/OpenAPI](https://swagger.io/)** and **[Scalar](https://github.com/scalar/scalar)** documentation in development mode.
 
-## Requisitos
+## Requirements
 
-- Node.js 22+
-- Docker and Docker Compose
-- npm (or another package manager, but the project uses `package-lock.json`)
+- [Node.js](https://nodejs.org/) **22+**
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+- [npm](https://www.npmjs.com/) (the project uses `package-lock.json`)
 
-## Technologies
+## Tech Stack
 
-- Fastify 5
-- TypeScript
-- Drizzle ORM + PostgreSQL
-- Zod (validação)
-- Swagger/OpenAPI + Scalar API Reference (em `/docs` quando `NODE_ENV=development`)
+- [Fastify](https://fastify.dev/) 5
+- [TypeScript](https://www.typescriptlang.org/)
+- [Drizzle ORM](https://orm.drizzle.team/) + [PostgreSQL](https://www.postgresql.org/)
+- [Zod](https://zod.dev/) (validation)
+- [Swagger/OpenAPI](https://swagger.io/) + [Scalar API Reference](https://github.com/scalar/scalar)
 
-## Setup
+---
 
-1. Clone the repository and enter the project folder.
-2. Install dependencies:
+## Getting Started
+
+Clone the repository and install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Start PostgreSQL with Docker:
+Start PostgreSQL with Docker:
 
 ```bash
 docker compose up -d
 ```
 
-4. Create a .env file at the project root:
+Create a .env file at the project root:
 
 ```bash
-# URL do banco (Docker local padrão)
+# Database connection (default local Docker setup)
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/desafio
 
-# Ativa docs em /docs
+# Enable docs at /docs
 NODE_ENV=development
 ```
 
-5. Run migrations (Drizzle):
+Run migrations (Drizzle):
 
 ```bash
 npm run db:migrate
@@ -63,7 +65,7 @@ npm run dev
 - Pretty logs enableds
 - API Documentation (in dev): `http://localhost:3333/docs`
 
-## Endpoints
+## API Endpoints
 
 Base URL: `http://localhost:3333`
 
@@ -89,9 +91,9 @@ Base URL: `http://localhost:3333`
     - 200: `{ "course": { "id": "<uuid>", "title": "...", "description": "... | null" } }`
     - 404: empty
 
-## Models (schema)
+## Database Models
 
-Main tables defined in `src/database/schema.ts`:
+Defined in `src/database/schema.ts`:
 
 - `courses`
   - `id` (uuid, pk, default random)
@@ -102,7 +104,7 @@ Main tables defined in `src/database/schema.ts`:
   - `name` (text, obrigatório)
   - `email` (text, único, obrigatório)
 
-## Main flow (Mermaid)
+## Development Workflow
 
 ```mermaid
 sequenceDiagram
@@ -141,17 +143,17 @@ sequenceDiagram
 
 ## Scripts
 
-- `npm run dev`: starts the server with reload and loads variables from `.env`
-- `npm run db:generate`: generates Drizzle artifacts from the schema
-- `npm run db:migrate`: applies migrations to the database
-- `npm run db:studio`: opens Drizzle Studio
+- `npm run dev` – start server with hot-reload
+- `npm run db:generate` – generate Drizzle artifacts from schema
+- `npm run db:migrate` – apply database migrations
+- `npm run db:studio` – open Drizzle Studio
 
-## Tips & Troubleshooting
+## Troubleshooting
 
-- Postgres connection refused: ensure `docker compose up -d` and check that port `5432` is not already in use.
-- Missing `DATABASE_URL` check your `.env`. Drizzle requires this variable for `db:generate`, `db:migrate` e `db:studio`.
-- Docs not available at `/docs`: ensure `NODE_ENV=development` s set in `.env` and restart the server.
+- Postgres connection refused: ensure `docker compose up -d` and check if port `5432` is free.
+- `DATABASE_URL` missing: make sure `.env` is set correctly. Required by `db:generate`, `db:migrate` e `db:studio`.
+- Docs not loading at `/docs`: set `NODE_ENV=development` in `.env` and restart the server.
 
 ## License
 
-ISC (ver `package.json`).
+[ISC](./package.json)
