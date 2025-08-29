@@ -14,6 +14,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
         querystring: z.object({
           search: z.string().optional(),
           orderBy: z.enum(["title"]).optional().default("title"),
+          page: z.coerce.number().optional().default(1),
         }),
         response: {
           200: z.object({
@@ -28,7 +29,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
       },
     },
     async (request, reply) => {
-      const { search, orderBy } = request.query;
+      const { search, orderBy, page } = request.query;
 
       const result = await db
         .select({
@@ -37,6 +38,8 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
         })
         .from(courses)
         .orderBy(asc(courses[orderBy]))
+        .limit(2)
+        .offset((page - 1) * 2)
         .where(search ? ilike(courses.title, `%${search}%`) : undefined);
 
       return reply.send({ courses: result });
