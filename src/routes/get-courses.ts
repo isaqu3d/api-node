@@ -24,6 +24,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
                 title: z.string(),
               })
             ),
+            total: z.number(),
           }),
         },
       },
@@ -42,7 +43,12 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
         .offset((page - 1) * 2)
         .where(search ? ilike(courses.title, `%${search}%`) : undefined);
 
-      return reply.send({ courses: result });
+      const total = await db.$count(
+        courses,
+        search ? ilike(courses.title, `%${search}%`) : undefined
+      );
+
+      return reply.send({ courses: result, total });
     }
   );
 };
