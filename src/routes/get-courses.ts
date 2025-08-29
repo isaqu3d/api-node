@@ -32,21 +32,23 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
     async (request, reply) => {
       const { search, orderBy, page } = request.query;
 
-      const result = await db
-        .select({
-          id: courses.id,
-          title: courses.title,
-        })
-        .from(courses)
-        .orderBy(asc(courses[orderBy]))
-        .limit(2)
-        .offset((page - 1) * 2)
-        .where(search ? ilike(courses.title, `%${search}%`) : undefined);
+      const [result, total] = await Promise.all([
+        db
+          .select({
+            id: courses.id,
+            title: courses.title,
+          })
+          .from(courses)
+          .orderBy(asc(courses[orderBy]))
+          .limit(2)
+          .offset((page - 1) * 2)
+          .where(search ? ilike(courses.title, `%${search}%`) : undefined),
 
-      const total = await db.$count(
-        courses,
-        search ? ilike(courses.title, `%${search}%`) : undefined
-      );
+        db.$count(
+          courses,
+          search ? ilike(courses.title, `%${search}%`) : undefined
+        ),
+      ]);
 
       return reply.send({ courses: result, total });
     }
