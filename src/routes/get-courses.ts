@@ -1,4 +1,4 @@
-import { asc, ilike } from "drizzle-orm";
+import { and, asc, ilike, SQL } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import z from "zod";
 import { db } from "../database/client.ts";
@@ -32,6 +32,12 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
     async (request, reply) => {
       const { search, orderBy, page } = request.query;
 
+      const conditions: SQL[] = [];
+
+      if (search) {
+        conditions.push(ilike(courses.title, `%${search}%`));
+      }
+
       const [result, total] = await Promise.all([
         db
           .select({
@@ -42,12 +48,9 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
           .orderBy(asc(courses[orderBy]))
           .limit(2)
           .offset((page - 1) * 2)
-          .where(search ? ilike(courses.title, `%${search}%`) : undefined),
+          .where(and(...conditions)),
 
-        db.$count(
-          courses,
-          search ? ilike(courses.title, `%${search}%`) : undefined
-        ),
+        db.$count(courses, and(...conditions)),
       ]);
 
       return reply.send({ courses: result, total });
