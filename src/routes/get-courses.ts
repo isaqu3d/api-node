@@ -1,8 +1,8 @@
-import { and, asc, ilike, SQL } from "drizzle-orm";
+import { and, asc, count, eq, ilike, SQL } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import z from "zod";
 import { db } from "../database/client.ts";
-import { courses } from "../database/schema.ts";
+import { courses, enrollments } from "../database/schema.ts";
 
 export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
   server.get(
@@ -22,6 +22,7 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
               z.object({
                 id: z.uuid(),
                 title: z.string(),
+                enrollments: z.number(),
               })
             ),
             total: z.number(),
@@ -43,12 +44,15 @@ export const GetCoursesRoute: FastifyPluginAsyncZod = async (server) => {
           .select({
             id: courses.id,
             title: courses.title,
+            enrollments: count(enrollments.id),
           })
           .from(courses)
+          .leftJoin(enrollments, eq(enrollments.courseId, courses.id))
           .orderBy(asc(courses[orderBy]))
-          .limit(2)
+          .limit(10)
           .offset((page - 1) * 2)
-          .where(and(...conditions)),
+          .where(and(...conditions))
+          .groupBy(courses.id),
 
         db.$count(courses, and(...conditions)),
       ]);
