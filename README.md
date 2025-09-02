@@ -11,7 +11,7 @@ Includes **[Swagger/OpenAPI](https://swagger.io/)** and **[Scalar](https://githu
 
 ## Tech Stack
 
-- [Fastify](https://fastify.dev/) 5
+- [Fastify](https://fastify.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Drizzle ORM](https://orm.drizzle.team/) + [PostgreSQL](https://www.postgresql.org/)
 - [Zod](https://zod.dev/) (validation)
