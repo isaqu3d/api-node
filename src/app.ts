@@ -7,9 +7,9 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
-import { CreateCourseRoute } from "./src/routes/create-course.ts";
-import { GetCourseByIdRoute } from "./src/routes/get-course-by-id.ts";
-import { GetCoursesRoute } from "./src/routes/get-courses.ts";
+import { CreateCourseRoute } from "./routes/create-course.ts";
+import { GetCourseByIdRoute } from "./routes/get-course-by-id.ts";
+import { GetCoursesRoute } from "./routes/get-courses.ts";
 
 const server = fastify({
   logger: {
@@ -46,6 +46,4 @@ server.register(CreateCourseRoute);
 server.register(GetCoursesRoute);
 server.register(GetCourseByIdRoute);
 
-server.listen({ port: 3333 }).then(() => {
-  console.log("HTTP server running!");
-});
+export { server };
