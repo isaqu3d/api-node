@@ -7,7 +7,8 @@
     "db:seed": "node --env-file .env --experimental-strip-types src/database/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "dotenv -e .env.test vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "@faker-js/faker": "^10.0.0",
     "@types/node": "^24.2.1",
     "@types/supertest": "^6.0.3",
+    "dotenv-cli": "^10.0.0",
     "drizzle-kit": "^0.31.4",
     "supertest": "^7.1.4",
     "typescript": "^5.9.2",
