@@ -37,7 +37,7 @@ Create a .env file at the project root:
 
 ```bash
 # Database connection (default local Docker setup)
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/desafio
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/api-node
 
 # Enable docs at /docs
 NODE_ENV=development
