@@ -10,6 +10,7 @@ import {
 import { CreateCourseRoute } from "./routes/create-course.ts";
 import { GetCourseByIdRoute } from "./routes/get-course-by-id.ts";
 import { GetCoursesRoute } from "./routes/get-courses.ts";
+import { LoginRoute } from "./routes/login.ts";
 
 const server = fastify({
   logger: {
@@ -45,5 +46,6 @@ if (process.env.NODE_ENV === "development") {
 server.register(CreateCourseRoute);
 server.register(GetCoursesRoute);
 server.register(GetCourseByIdRoute);
+server.register(LoginRoute);
 
 export { server };
