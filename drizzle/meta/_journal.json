@@ -29,6 +29,13 @@
       "when": 1756837467478,
       "tag": "0003_dashing_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1757104474869,
+      "tag": "0006_groovy_the_leader",
+      "breakpoints": true
     }
   ]
 }
