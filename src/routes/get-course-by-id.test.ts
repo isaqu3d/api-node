@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import request from "supertest";
 import { expect, test } from "vitest";
 import { server } from "../app.ts";
@@ -18,4 +19,12 @@ test("get course by id", async () => {
       description: null,
     },
   });
+});
+
+test("return 404 for non-existing course", async () => {
+  await server.ready();
+
+  const response = await request(server.server).get(`/courses/${randomUUID()}`);
+
+  expect(response.status).toEqual(404);
 });
