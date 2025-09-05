@@ -6,7 +6,7 @@ export async function makeCourse(title?: string) {
   const result = await db
     .insert(courses)
     .values({
-      title: faker.lorem.words(4),
+      title: title ?? faker.lorem.words(4),
     })
     .returning();
 
