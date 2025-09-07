@@ -4,13 +4,13 @@ import z from "zod";
 import { db } from "../database/client.ts";
 import { courses } from "../database/schema.ts";
 import { getAuthenticatedUserFromRequest } from "../utils/get-authenticated-user-from-request.ts";
-import { checkRequestJwt } from "./hooks/check-request-jwt.ts";
+import { checkRequestJWT } from "./hooks/check-request-jwt.ts";
 
 export const GetCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
   server.get(
     "/courses/:id",
     {
-      preHandler: [checkRequestJwt],
+      preHandler: [checkRequestJWT],
       schema: {
         tags: ["courses"],
         summary: "Get course by ID",
