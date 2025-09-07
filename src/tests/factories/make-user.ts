@@ -2,8 +2,8 @@ import { faker } from "@faker-js/faker";
 import { hash } from "argon2";
 import jwt from "jsonwebtoken";
 import { randomUUID } from "node:crypto";
-import { db } from "../../database/client";
-import { users } from "../../database/schema";
+import { db } from "../../database/client.ts";
+import { users } from "../../database/schema.ts";
 
 export async function makeUser(role?: "manager" | "student") {
   const passwordBeforeHash = randomUUID();
