@@ -11,10 +11,13 @@ test("login", async () => {
   const response = await request(server.server)
     .post("/sessions")
     .set("Content-Type", "application/json")
-    .send({ email: user.email, password: passwordBeforeHash });
+    .send({
+      email: user.email,
+      password: passwordBeforeHash,
+    });
 
   expect(response.status).toEqual(200);
   expect(response.body).toEqual({
-    message: "ok",
+    token: expect.any(String),
   });
 });
