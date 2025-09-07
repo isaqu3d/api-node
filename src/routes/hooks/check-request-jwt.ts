@@ -6,7 +6,10 @@ type JWTPayload = {
   role: "student" | "manager";
 };
 
-export function checkRequestJwt(request: FastifyRequest, reply: FastifyReply) {
+export async function checkRequestJWT(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
   const token = request.headers.authorization;
 
   if (!token) {
@@ -18,8 +21,10 @@ export function checkRequestJwt(request: FastifyRequest, reply: FastifyReply) {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
+    const payload = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
+
+    request.user = payload;
+  } catch {
     return reply.status(401).send();
   }
 }
