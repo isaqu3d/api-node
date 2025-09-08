@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === "development") {
   server.register(fastifySwagger, {
     openapi: {
       info: {
-        title: "Desafio Node.js",
+        title: "Node.js API",
         version: "1.0.0",
       },
     },
