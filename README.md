@@ -114,29 +114,29 @@ sequenceDiagram
   participant DB as Drizzle + PostgreSQL
 
   C->>S: POST /courses {title}
-  S->>V: Validar body
-  V-->>S: OK ou Erro 400
-  alt válido
+  S->>V: Validate body
+  V-->>S: OK or 400 Error
+  alt valid
     S->>DB: INSERT INTO courses (title)
     DB-->>S: {id}
     S-->>C: 201 {courseId}
-  else inválido
+  else invalid
     S-->>C: 400
   end
 
   C->>S: GET /courses
   S->>DB: SELECT id,title FROM courses
-  DB-->>S: lista
+  DB-->>S: list
   S-->>C: 200 {courses: [...]}
 
   C->>S: GET /courses/:id
-  S->>V: Validar param id (uuid)
-  V-->>S: OK ou Erro 400
-  alt encontrado
+  S->>V: Validate param id (uuid)
+  V-->>S: OK or 400 Error
+  alt found
     S->>DB: SELECT * FROM courses WHERE id=...
     DB-->>S: course
     S-->>C: 200 {course}
-  else não encontrado
+  else not found
     S-->>C: 404
   end
 ```
